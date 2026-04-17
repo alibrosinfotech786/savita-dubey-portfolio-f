@@ -18,9 +18,39 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Savita Dubey | Finance. Compliance. Leadership.",
+  title: {
+    default: "Savita Dubey | Chartered Accountant & Finance Consultant",
+    template: "%s | Savita Dubey",
+  },
   description:
-    "Personal brand and learning platform for finance professionals. Corporate advisory, training, and speaking by Savita Dubey.",
+    "Savita Dubey is a Chartered Accountant, INSEAD graduate, and finance consultant specializing in Corporate Compliance, AML/KYC training, and Audit methodology.",
+  keywords: ["Savita Dubey", "Chartered Accountant", "Finance Consultant", "Corporate Compliance", "AML training", "KYC advisory", "Audit training", "INSEAD Finance"],
+  authors: [{ name: "Savita Dubey" }],
+  creator: "Savita Dubey",
+  openGraph: {
+    type: "website",
+    locale: "en_IE",
+    url: "https://savitadubey.com",
+    title: "Savita Dubey | Finance. Compliance. Leadership.",
+    description: "Expert corporate advisory and professional training for financial institutions and professionals.",
+    siteName: "Savita Dubey",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Savita Dubey | Finance Expert",
+    description: "Chartered Accountant & INSEAD Finance graduate providing corporate advisory and training.",
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.png", type: "image/png" },
+     
+    ],
+    apple: "/favicon.png",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

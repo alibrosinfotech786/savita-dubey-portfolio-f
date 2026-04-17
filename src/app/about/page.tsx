@@ -1,10 +1,22 @@
-﻿import Image from "next/image";
+﻿import { Metadata } from "next";
+import Image from "next/image";
 import Section from "@/components/Section";
 import Container from "@/components/Container";
 import Button from "@/components/Button";
 import PageHero from "@/components/PageHero";
 import { FadeIn, FadeInStagger, CountUp } from "@/components/Animations";
 import { GraduationCap, Briefcase, Award, Heart } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "About Savita Dubey | Finance Expert & INSEAD Alumna",
+  description: "Learn about Savita Dubey's professional journey. Chartered Accountant with 15+ years of experience across KPMG, JPMorgan Chase, and the INSEAD Master in Finance program.",
+  keywords: ["Savita Dubey Biography", "Finance Consultant Profile", "INSEAD Alumna Finance", "Chartered Accountant Profile", "KPMG Senior Auditor", "JPMorgan Compliance Officer"],
+  openGraph: {
+    title: "About Savita Dubey | Experience & Vision",
+    description: "Bridging academic theory with real-world financial practice.",
+    images: ["https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=1200"],
+  },
+};
 
 const experience = [
   {

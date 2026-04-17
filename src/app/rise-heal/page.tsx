@@ -1,8 +1,19 @@
+import { Metadata } from "next";
 import Section from "@/components/Section";
 import Container from "@/components/Container";
 import Button from "@/components/Button";
 import { FadeIn, FadeInStagger } from "@/components/Animations";
 import { Sparkles, Heart, RefreshCw, Layers } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Rise & Heal | Mental Wellbeing for Women in Finance",
+  description: "A dedicated platform by Savita Dubey for women in finance and demanding roles to navigate burnout, career transitions, and professional confidence.",
+  keywords: ["Rise and Heal", "Women in Finance Wellbeing", "Finance Burnout Support", "Career Resilience", "Professional Mental Health", "Savita Dubey Wellbeing"],
+  openGraph: {
+    title: "Rise & Heal | Support for Professional Women",
+    description: "Ambition and vulnerability coexist here. Navigate your career with clarity and intention.",
+  },
+};
 
 const pillars = [
   {

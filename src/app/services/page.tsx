@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import Section from "@/components/Section";
 import Container from "@/components/Container";
 import Button from "@/components/Button";
@@ -6,6 +7,17 @@ import PageHero from "@/components/PageHero";
 import { services } from "@/data/services";
 import { FadeIn, FadeInStagger } from "@/components/Animations";
 import { Search, FileCheck, CheckCircle2 } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Services | Corporate Advisory, Compliance Training & Keynote Speaking",
+  description: "Bespoke corporate advisory, secretarial services, professional training for finance teams, and keynote speaking engagements by Savita Dubey, INSEAD alumna and finance leader.",
+  keywords: ["Corporate Advisory", "Compliance Training", "AML KYC Workshop", "Secretarial Services", "Finance Leadership Speaking", "Audit Training", "Savita Dubey Services"],
+  openGraph: {
+    title: "Professional Services | Savita Dubey",
+    description: "Expert guidance in finance, compliance, and corporate governance.",
+    images: ["https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200"],
+  },
+};
 
 const steps = [
   {

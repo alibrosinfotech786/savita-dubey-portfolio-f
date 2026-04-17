@@ -1,9 +1,15 @@
+import { Metadata } from "next";
 import Section from "@/components/Section";
 import Container from "@/components/Container";
 import BlogCard from "@/features/blog/BlogCard";
 import PageHero from "@/components/PageHero";
 import { blogPosts } from "@/data/blog";
 import { FadeInStagger } from "@/components/Animations";
+
+export const metadata: Metadata = {
+  title: "Blog | Insights on Finance & Governance",
+  description: "Thought leadership and analysis on the evolving landscape of global financial governance, compliance strategies, and ethical leadership.",
+};
 
 export default function BlogPage() {
   return (
