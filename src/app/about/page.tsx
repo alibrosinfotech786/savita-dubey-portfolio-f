@@ -14,7 +14,8 @@ export const metadata: Metadata = {
   openGraph: {
     title: "About Savita Dubey | Experience & Vision",
     description: "Bridging academic theory with real-world financial practice.",
-    images: ["https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=1200"],
+    images: ["/savitadubey.jpeg"], // Replace with actual relative path if available
+    url: "/about",
   },
 };
 
@@ -60,13 +61,13 @@ export default function AboutPage() {
       {/* Stats Bar */}
       <div style={{ background: "var(--surface)", borderBottom: "1px solid var(--border)" }}>
         <Container>
-          <div className="grid grid-cols-3 divide-x py-8" style={{ borderColor: "var(--border)" }}>
+          <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x py-8" style={{ borderColor: "var(--border)" }}>
             {stats.map((s) => (
-              <div key={s.label} className="text-center px-4">
+              <div key={s.label} className="text-center py-4 sm:py-0 px-4">
                 <p className="font-serif text-3xl md:text-4xl font-bold" style={{ color: "var(--accent)" }}>
                   <CountUp value={s.value} suffix={s.suffix} />
                 </p>
-                <p className="text-xs font-semibold uppercase tracking-wider mt-1" style={{ color: "var(--muted)" }}>{s.label}</p>
+                <p className="text-xs font-semibold uppercase tracking-wider mt-1 text-muted-foreground ">{s.label}</p>
               </div>
             ))}
           </div>
@@ -80,7 +81,7 @@ export default function AboutPage() {
             <FadeIn direction="right">
               <div className="rounded-3xl aspect-square flex items-center justify-center shadow-2xl relative overflow-hidden group border border-(--border)">
                 <Image 
-                  src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=1000" 
+                  src="/savitadubey.jpeg" 
                   alt="Savita Dubey - Professional Portrait"
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -101,7 +102,7 @@ export default function AboutPage() {
                 </h2>
               </FadeIn>
               <FadeIn delay={0.1}>
-                <div className="space-y-5 text-lg leading-relaxed mb-10" style={{ color: "var(--muted)" }}>
+                <div className="space-y-5 text-lg leading-relaxed mb-10 text-muted-foreground ">
                   <p>
                     I am a Chartered Accountant and Master in Finance graduate from INSEAD, with more than 15 years of experience in audit, banking, and compliance.
                   </p>
@@ -116,7 +117,7 @@ export default function AboutPage() {
               <FadeIn delay={0.2}>
                 <div className="p-6 rounded-2xl" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
                   <p className="text-sm font-bold uppercase tracking-wider mb-2" style={{ color: "var(--accent)" }}>Mission</p>
-                  <p className="text-lg leading-relaxed" style={{ color: "var(--muted)" }}>
+                  <p className="text-lg leading-relaxed text-muted-foreground ">
                     To simplify complex financial and regulatory concepts, empowering professionals to operate with absolute integrity and strategic clarity.
                   </p>
                 </div>
@@ -142,7 +143,7 @@ export default function AboutPage() {
                 <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: "var(--accent)" }}>{exp.period}</p>
                 <h3 className="font-serif text-2xl font-bold mb-1" style={{ color: "var(--foreground)" }}>{exp.org}</h3>
                 <p className="text-sm font-semibold mb-6 opacity-60 uppercase">{exp.role}</p>
-                <p className="leading-relaxed" style={{ color: "var(--muted)" }}>{exp.desc}</p>
+                <p className="leading-relaxed text-muted-foreground ">{exp.desc}</p>
               </div>
             ))}
           </FadeInStagger>

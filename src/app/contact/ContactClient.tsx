@@ -6,7 +6,7 @@ import Container from "@/components/Container";
 import Button from "@/components/Button";
 import PageHero from "@/components/PageHero";
 import { FadeIn, FadeInStagger } from "@/components/Animations";
-import { CheckCircle2, Send, ArrowRight } from "lucide-react";
+import { CheckCircle2, Send, ArrowRight, Phone } from "lucide-react";
 
 const engagements = [
   { label: "Corporate Advisory", desc: "Incorporation, secretarial services, governance, and regulatory compliance." },
@@ -37,7 +37,7 @@ export default function ContactClient() {
             <div className="space-y-10">
               <FadeIn>
                 <h2 className="font-serif text-3xl md:text-4xl font-bold mb-4" style={{ color: "var(--foreground)" }}>How Can I Help?</h2>
-                <p className="text-lg leading-relaxed" style={{ color: "var(--muted)" }}>
+                <p className="text-lg leading-relaxed text-muted-foreground " >
                   I work with finance professionals, corporate teams, and educational institutions across the globe. Every engagement is tailored — no off-the-shelf solutions.
                 </p>
               </FadeIn>
@@ -53,18 +53,32 @@ export default function ContactClient() {
                     </div>
                     <div>
                       <p className="font-serif text-lg font-bold mb-1" style={{ color: "var(--foreground)" }}>{item.label}</p>
-                      <p className="leading-relaxed" style={{ color: "var(--muted)" }}>{item.desc}</p>
+                      <p className="leading-relaxed text-muted-foreground " >{item.desc}</p>
                     </div>
                   </div>
                 ))}
               </FadeInStagger>
 
               <FadeIn>
-                <div className="p-7 rounded-2xl" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
-                  <p className="font-bold mb-2 flex items-center gap-2" style={{ color: "var(--foreground)" }}>
-                    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse inline-block" /> Response Time
-                  </p>
-                  <p className="text-lg" style={{ color: "var(--muted)" }}>I typically respond within 1–2 business days via email.</p>
+                <div className="p-7 rounded-2xl space-y-4" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
+                  <div>
+                    <p className="font-bold mb-2 flex items-center gap-2" style={{ color: "var(--foreground)" }}>
+                      <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse inline-block" /> Response Time
+                    </p>
+                    <p className="text-lg text-muted-foreground " >I typically respond within 1–2 business days via email.</p>
+                  </div>
+                  <div className="pt-4 border-t" style={{ borderColor: "var(--border)" }}>
+                    <p className="font-bold mb-3" style={{ color: "var(--foreground)" }}>Prefer an instant chat?</p>
+                    <a
+                      href="https://wa.me/6580253761"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center sm:justify-start gap-2.5 px-5 py-2.5 rounded-xl text-white text-sm font-bold transition-all hover:opacity-90 active:scale-95 w-full sm:w-auto text-center"
+                      style={{ background: "#25D366" }}
+                    >
+                      <Phone size={16} fill="currentColor" className="shrink-0" /> Chat on WhatsApp
+                    </a>
+                  </div>
                 </div>
               </FadeIn>
             </div>
@@ -81,7 +95,7 @@ export default function ContactClient() {
                       <Send className="w-10 h-10" style={{ color: "var(--accent)" }} />
                     </div>
                     <h3 className="font-serif text-3xl font-bold mb-3" style={{ color: "var(--foreground)" }}>Message Sent</h3>
-                    <p className="text-lg" style={{ color: "var(--muted)" }}>Thank you for reaching out. I&apos;ll be in touch shortly.</p>
+                    <p className="text-lg text-muted-foreground " >Thank you for reaching out. I&apos;ll be in touch shortly.</p>
                     <Button onClick={() => setSubmitted(false)} variant="outline" className="mt-8 rounded-xl">
                       Send another message
                     </Button>
@@ -90,7 +104,7 @@ export default function ContactClient() {
                   <form onSubmit={handleSubmit} className="space-y-5">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                       <div>
-                        <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ color: "var(--muted)" }}>Full Name</label>
+                        <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-muted-foreground " >Full Name</label>
                         <input
                           type="text"
                           required
@@ -100,7 +114,7 @@ export default function ContactClient() {
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ color: "var(--muted)" }}>Email Address</label>
+                        <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-muted-foreground " >Email Address</label>
                         <input
                           type="email"
                           required
@@ -111,7 +125,7 @@ export default function ContactClient() {
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ color: "var(--muted)" }}>Enquiry Type</label>
+                      <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-muted-foreground " >Enquiry Type</label>
                       <select
                         className="w-full px-4 py-3.5 rounded-xl text-sm focus:outline-none transition-all"
                         style={{ background: "var(--surface)", border: "1px solid var(--border)", color: "var(--foreground)" }}
@@ -123,7 +137,7 @@ export default function ContactClient() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ color: "var(--muted)" }}>Your Message</label>
+                      <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-muted-foreground " >Your Message</label>
                       <textarea
                         required
                         rows={5}

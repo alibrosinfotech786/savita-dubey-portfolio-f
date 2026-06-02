@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Contact | Savita Dubey",
     description: "Let's start a conversation about your financial and compliance needs.",
+    url: "/contact",
   },
 };
 

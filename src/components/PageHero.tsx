@@ -24,7 +24,7 @@ export default function PageHero({ subtitle, title, description, accentColor }: 
           >
             {subtitle}
           </p>
-          <h1 className="font-serif text-5xl md:text-7xl font-bold mb-6 leading-tight tracking-tight">
+          <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl font-bold mb-6 leading-tight tracking-tight px-4 sm:px-0">
             {title}
           </h1>
           <p className="text-lg md:text-xl max-w-2xl mx-auto leading-relaxed" style={{ color: "var(--muted-2)" }}>

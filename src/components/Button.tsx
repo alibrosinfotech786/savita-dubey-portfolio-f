@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { ReactNode } from "react";
 import { motion } from "framer-motion";
+import { Button as ShadcnButton } from "@/components/ui/button";
 
 interface ButtonProps {
   href?: string;
@@ -12,26 +13,32 @@ interface ButtonProps {
   children: ReactNode;
   className?: string;
   type?: "button" | "submit";
+  disabled?: boolean;
 }
 
-const base = "inline-flex items-center justify-center font-medium rounded-full px-6 py-3 text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--accent)]";
-
-const variants = {
-  primary: "bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)] shadow-lg hover:shadow-indigo-500/25",
-  outline: "border-2 border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-white",
-  ghost: "text-[var(--accent)] hover:bg-[var(--accent-light)]",
-};
-
-export default function Button({ href, onClick, variant = "primary", children, className = "", type = "button" }: ButtonProps) {
-  const cls = `${base} ${variants[variant]} ${className}`;
+export default function Button({ href, onClick, variant = "primary", children, className = "", type = "button", disabled }: ButtonProps) {
+  // Map our custom variants to Shadcn variants
+  const shadcnVariant = variant === "primary" ? "default" : variant;
   
   const content = (
     <motion.span
       whileHover={{ y: -1 }}
-      className="inline-flex items-center"
+      className="inline-flex items-center w-full justify-center"
     >
       {children}
     </motion.span>
+  );
+
+  const buttonElement = (
+    <ShadcnButton 
+      variant={shadcnVariant} 
+      onClick={onClick} 
+      disabled={disabled} 
+      type={type}
+      className={`rounded-full px-6 py-3 transition-all duration-300 ${className} ${variant === 'primary' ? 'bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)]' : ''}`}
+    >
+      {content}
+    </ShadcnButton>
   );
 
   if (href) return (
@@ -39,8 +46,16 @@ export default function Button({ href, onClick, variant = "primary", children, c
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       transition={{ type: "spring", stiffness: 400, damping: 10 }}
+      className="inline-block"
     >
-      <Link href={href} className={cls}>{content}</Link>
+      <Link href={href} className="w-full">
+        <ShadcnButton 
+          variant={shadcnVariant} 
+          className={`rounded-full px-6 py-3 transition-all duration-300 ${className} ${variant === 'primary' ? 'bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)]' : ''}`}
+        >
+          {content}
+        </ShadcnButton>
+      </Link>
     </motion.div>
   );
 
@@ -49,8 +64,9 @@ export default function Button({ href, onClick, variant = "primary", children, c
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       transition={{ type: "spring", stiffness: 400, damping: 10 }}
+      className="inline-block"
     >
-      <button type={type} onClick={onClick} className={cls}>{content}</button>
+      {buttonElement}
     </motion.div>
   );
 }

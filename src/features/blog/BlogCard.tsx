@@ -1,40 +1,90 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
-import { BlogPost } from "@/data/blog";
-import Card from "@/components/Card";
+import Link from "next/link";
+import { Lock } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { StaggerItem } from "@/components/Animations";
 
-export default function BlogCard({ post }: { post: BlogPost }) {
+interface BlogCardProps {
+  post: {
+    id: string | number;
+    slug?: string;
+    title: string;
+    excerpt?: string | null;
+    description?: string;
+    category?: string | null;
+    tag?: string | null;
+    cover_image?: string | null;
+    image?: string | null;
+    is_premium?: boolean;
+    created_at?: string;
+    date?: string;
+    readTime?: string;
+    author?: { name?: string };
+    author_name?: string;
+  };
+  hasSubscription?: boolean;
+}
+
+export default function BlogCard({ post, hasSubscription = false }: BlogCardProps) {
+  const id = post.id || post.slug;
+  const coverImage = post.image || post.cover_image;
+
+  const imageSrc = coverImage
+    ? coverImage.startsWith("http") || coverImage.startsWith("/dummy")
+      ? coverImage
+      : `${process.env.NEXT_PUBLIC_STORAGE_URL}${coverImage.startsWith("/") ? coverImage.substring(1) : coverImage}`
+    : "https://images.unsplash.com/photo-1454165833767-02755157f8fe?auto=format&fit=crop&q=80&w=800";
+
   return (
     <StaggerItem>
-      <Card className="h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col p-0">
-        <div className="relative w-full h-48">
-          <Image
-            src={post.image}
-            alt={post.title}
-            fill
-            className="object-cover"
-          />
-        </div>
-        <div className="p-6 flex flex-col flex-1">
-          <div className="flex items-center gap-3 mb-3">
-            <span className="inline-block text-xs font-semibold px-3 py-1 rounded-full" style={{ color: "var(--accent)", background: "var(--accent-light)" }}>
-              {post.tag}
-            </span>
-            <span className="text-xs" style={{ color: "var(--muted-2)" }}>{post.readTime}</span>
+      <Link href={`/blog?id=${id}`} className="group block h-full">
+        <div className="h-full rounded-xl border border-border bg-card text-card-foreground shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden flex flex-col">
+          {/* Image */}
+          <div className="relative w-full h-48 bg-muted overflow-hidden">
+            <Image
+              src={imageSrc}
+              alt={post.title}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              unoptimized
+            />
+            {post.is_premium && !hasSubscription && (
+              <div className="absolute top-3 right-3 flex items-center gap-1 bg-amber-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
+                <Lock className="h-3 w-3" /> Premium
+              </div>
+            )}
           </div>
-          <h3 className="font-serif text-lg font-semibold mb-2 leading-snug" style={{ color: "var(--foreground)" }}>
-            {post.title}
-          </h3>
-          <p className="text-sm leading-relaxed mb-4 line-clamp-3 flex-1" style={{ color: "var(--muted)" }}>
-            {post.description}
-          </p>
-          <div className="flex items-center justify-between mt-auto">
-            <span className="text-xs" style={{ color: "var(--muted-2)" }}>{post.date}</span>
+
+          {/* Body */}
+          <div className="p-5 flex flex-col flex-1">
+            <div className="flex items-center gap-2 mb-3">
+              <Badge variant="secondary" className="text-xs">
+                {post.category || post.tag}
+              </Badge>
+              {post.readTime && (
+                <span className="text-xs text-muted-foreground">{post.readTime}</span>
+              )}
+            </div>
+
+            <h3 className="font-semibold text-base text-foreground leading-snug mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+              {post.title}
+            </h3>
+
+            <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3 flex-1 mb-4">
+              {post.excerpt || post.description}
+            </p>
+
+            <div className="flex items-center justify-between mt-auto pt-3 border-t border-border">
+              <span className="text-xs text-muted-foreground">
+                {post.author?.name || post.author_name || "Savita Dubey"}
+              </span>
+              <span className="text-xs text-muted-foreground">{post.date}</span>
+            </div>
           </div>
         </div>
-      </Card>
+      </Link>
     </StaggerItem>
   );
 }

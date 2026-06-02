@@ -16,7 +16,7 @@ export const services: Service[] = [
     tagline: "Governance, Structure & Regulatory Clarity",
     category: "Advisory",
     icon: "briefcase",
-    image: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=1000",
+    image: "https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     description: "Expert guidance on business structure, governance, and regulatory requirements — from incorporation through to ongoing compliance management.",
     deliverables: [
       "Company Incorporation",

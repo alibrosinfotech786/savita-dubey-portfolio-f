@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 // SEO items usually go in a separate layout or page if it's a server component
@@ -14,8 +15,9 @@ import ServiceCard from "@/features/services/ServiceCard";
 import { learningItems } from "@/data/learning";
 import { blogPosts } from "@/data/blog";
 import { services } from "@/data/services";
-import { FadeIn, FadeInStagger, RevealLine, CountUp } from "@/components/Animations";
+import { FadeIn, FadeInStagger, RevealLine, CountUp, staggerContainer } from "@/components/Animations";
 import { ArrowRight, Trophy, Users, BookOpen, ShieldCheck, ChevronDown } from "lucide-react";
+import { useBlogStore } from "@/store/blogStore";
 
 const stats = [
   { value: 15, suffix: "+", label: "Years Experience" },
@@ -24,39 +26,77 @@ const stats = [
 ];
 
 export default function HomePageClient() {
+  const { posts, loading, fetchPosts } = useBlogStore();
+
+  useEffect(() => {
+    fetchPosts(1, 3);
+  }, [fetchPosts]);
+
   const featuredLearning = learningItems.slice(0, 3);
-  const featuredBlogs = blogPosts.slice(0, 3);
+  
+  // Create dummy fallback data if no posts exist in backend
+  const dummyPosts = [
+    {
+      id: "dummy-1",
+      title: "Sustainable Wealth Management in the Digital Age",
+      excerpt: "Explore how modern compliance and digital tools are reshaping long-term investment strategies.",
+      category: "Finance",
+      cover_image: "/dummy/img1.png",
+      created_at: new Date().toISOString(),
+      slug: "dummy-1"
+    },
+    {
+      id: "dummy-2",
+      title: "The Future of Global Compliance Standards",
+      excerpt: "A deep dive into upcoming regulatory changes and their impact on international banking.",
+      category: "Compliance",
+      cover_image: "/dummy/img2.png",
+      created_at: new Date().toISOString(),
+      slug: "dummy-2"
+    },
+    {
+      id: "dummy-3",
+      title: "Leadership in Times of Financial Turmoil",
+      excerpt: "Key strategies for maintaining team morale and operational excellence during market shifts.",
+      category: "Leadership",
+      cover_image: "/dummy/img3.png",
+      created_at: new Date().toISOString(),
+      slug: "dummy-3"
+    }
+  ];
+
+  const featuredBlogs = posts.length > 0 ? posts.slice(0, 3) : dummyPosts;
 
   return (
     <>
       {/* -- Hero -- */}
-      <Section className="relative flex items-center min-h-[70vh] pt-20" role="banner" style={{ background: "var(--hero-bg)", color: "var(--hero-text)" }}>
+      <Section className="relative flex items-center min-h-[90vh] md:min-h-[80vh] lg:min-h-[70vh] pt-20 md:pt-28" role="banner" style={{ background: "var(--hero-bg)", color: "var(--hero-text)" }}>
         <div className="absolute inset-0 z-0 h-full w-full">
           <Image 
-            src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=2000" 
+            src="/savitadubey.jpeg" 
             alt="Savita Dubey - Finance & Compliance Expert Background"
             fill
-            className="object-cover opacity-60"
+            className="object-cover opacity-60 md:opacity-70"
             priority
           />
           <div className="absolute inset-0 z-10" style={{ background: "var(--hero-overlay)" }} />
         </div>
 
-        <Container className="relative z-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center py-12 md:py-24">
-          <div className="flex flex-col items-start text-left gap-6">
+        <Container className="relative z-20 grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-12 lg:gap-16 items-center py-10 md:py-20">
+          <div className="flex flex-col items-center lg:items-start text-center lg:text-left gap-6 md:gap-8">
             <FadeIn>
               <span
-                className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full text-xs font-semibold tracking-widest uppercase mb-2"
+                className="inline-flex flex-wrap justify-center lg:justify-start items-center gap-2 sm:gap-3 px-4 py-1.5 rounded-full text-[10px] sm:text-xs font-semibold tracking-widest uppercase mb-2"
                 style={{ background: "var(--hero-badge-bg)", border: "1px solid var(--hero-badge-border)", color: "var(--accent)" }}
               >
                 <div className="flex items-center gap-1.5">
                   <ShieldCheck size={14} /> Finance
                 </div>
-                <div className="w-1 h-1 rounded-full bg-current opacity-30" />
+                <div className="hidden sm:block w-1 h-1 rounded-full bg-current opacity-30" />
                 <div className="flex items-center gap-1.5">
                   <Trophy size={14} /> Compliance
                 </div>
-                <div className="w-1 h-1 rounded-full bg-current opacity-30" />
+                <div className="hidden sm:block w-1 h-1 rounded-full bg-current opacity-30" />
                 <div className="flex items-center gap-1.5">
                   <Users size={14} /> Leadership
                 </div>
@@ -64,32 +104,33 @@ export default function HomePageClient() {
             </FadeIn>
 
             <FadeIn delay={0.1}>
-              <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight tracking-tight">
-                Savita Dubey <br />
-                <span className="text-2xl sm:text-3xl lg:text-4xl opacity-90">INSEAD Master in <span className="italic">Finance</span> | Compliance Leader</span>
+              <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
+                Savita Dubey <br className="hidden sm:block" />
+                <span className="text-xl sm:text-3xl lg:text-4xl opacity-90 block mt-2">INSEAD Master in <span className="italic">Finance</span> | Compliance Leader</span>
               </h1>
             </FadeIn>
 
             <FadeIn delay={0.2}>
-              <p className="text-md md:text-lg max-w-xl leading-relaxed" style={{ color: "var(--hero-muted)" }}>
+              <p className="text-base sm:text-lg lg:text-xl max-w-xl leading-relaxed mx-auto lg:mx-0" style={{ color: "var(--hero-muted)" }}>
                 Chartered Accountant and INSEAD alumna with 15+ years of experience at KPMG and JPMorgan Chase. Expert in corporate advisory, AML/KYC training, and audit methodology.
               </p>
             </FadeIn>
 
-            <FadeIn delay={0.3} className="flex flex-wrap gap-4 mt-4">
-              <Button href="/learning-hub">
+            <FadeIn delay={0.3} className="flex flex-col sm:flex-row flex-wrap justify-center lg:justify-start gap-4 mt-2 sm:mt-4 w-full sm:w-auto">
+              <Button href="/learning-hub" className="w-full sm:w-auto justify-center px-6 py-3 text-sm">
                 Explore Learning Hub <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
-              <Button href="/services" variant="outline">
+              
+              <Button href="/services" variant="outline" className="w-full sm:w-auto justify-center px-6 py-3 text-sm border-blue-600/50 text-foreground hover:bg-blue-600 hover:border-blue-600 hover:text-white transition-all duration-300">
                 View Services
               </Button>
             </FadeIn>
           </div>
 
-          <FadeIn delay={0.4} className="hidden lg:block relative h-150 w-full">
+          <FadeIn delay={0.4} className="hidden lg:block relative lg:h-[500px] xl:h-[600px] w-full">
              <div className="relative h-full w-full rounded-2xl overflow-hidden border border-(--hero-badge-border) shadow-2xl">
                <Image 
-                src="https://plus.unsplash.com/premium_photo-1686244745026-98fc15ad3400?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTd8fHByb2Zlc3Npb25hbHN8ZW58MHx8MHx8fDA%3D" 
+                src="/savitadubey.jpeg" 
                 alt="Savita Dubey - Professional Financial Leadership"
                 fill
                 className="object-cover"
@@ -104,10 +145,10 @@ export default function HomePageClient() {
           </FadeIn>
         </Container>
 
-        <FadeIn delay={0.8} className="absolute bottom-8 left-12 flex flex-col items-start gap-2 cursor-pointer z-30" viewport={{ once: true }}>
+        <FadeIn delay={0.8} className="absolute bottom-8 left-1/2 -translate-x-1/2 lg:left-12 lg:translate-x-0 flex flex-col items-center lg:items-start gap-2 cursor-pointer z-30" viewport={{ once: true }}>
           <button
             onClick={() => window.scrollTo({ top: window.innerHeight, behavior: "smooth" })}
-            className="flex flex-col items-start gap-2 transition-opacity hover:opacity-70 group"
+            className="flex flex-col items-center lg:items-start gap-2 transition-opacity hover:opacity-70 group"
             aria-label="Scroll to next section"
           >
             <span className="text-[10px] font-bold uppercase tracking-[0.3em] transition-colors" style={{ color: "var(--hero-muted)" }}>Discover more</span>
@@ -127,13 +168,13 @@ export default function HomePageClient() {
                 <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-lg transition-transform group-hover:scale-110" style={{ background: "var(--accent)", color: "#fff" }}>
                   {i === 0 ? <Trophy size={24} /> : i === 1 ? <BookOpen size={24} /> : <Users size={24} />}
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col gap-2">
                   <div className="flex items-baseline gap-1">
                     <span className="text-3xl md:text-4xl font-serif font-bold tracking-tight" style={{ color: "var(--foreground)" }}>
                       <CountUp value={s.value} suffix={s.suffix} />
                     </span>
                   </div>
-                  <p className="max-w-30 text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] leading-tight" style={{ color: "var(--muted)" }}>{s.label}</p>
+                  <p className="max-w-30 text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] leading-tight text-muted-foreground " >{s.label}</p>
                 </div>
               </FadeIn>
             ))}
@@ -152,7 +193,7 @@ export default function HomePageClient() {
                 </p>
                 <h2 className="font-serif text-3xl md:text-5xl font-bold mb-4 leading-tight" style={{ color: "var(--foreground)" }}>Educational Mastery</h2>
                 <RevealLine className="h-1 w-16 mb-8 rounded-full" style={{ background: "var(--accent)" } as React.CSSProperties} />
-                <p className="text-lg" style={{ color: "var(--muted)" }}>
+                <p className="text-lg text-muted-foreground " >
                   Deep dives into finance, accounting, and compliance. Structured for professionals and students seeking absolute clarity.
                 </p>
               </FadeIn>
@@ -186,7 +227,7 @@ export default function HomePageClient() {
                   </div>
                   <div>
                     <h4 className="font-bold text-lg mb-1">Corporate Governance</h4>
-                    <p className="leading-relaxed text-sm" style={{ color: "var(--muted)" }}>Deep institutional knowledge from JPMorgan and KPMG applied to your compliance frameworks.</p>
+                    <p className="leading-relaxed text-sm text-muted-foreground " >Deep institutional knowledge from JPMorgan and KPMG applied to your compliance frameworks.</p>
                   </div>
                 </div>
                 <div className="flex gap-6">
@@ -195,7 +236,7 @@ export default function HomePageClient() {
                   </div>
                   <div>
                     <h4 className="font-bold text-lg mb-1">Certified Education</h4>
-                    <p className="leading-relaxed text-sm" style={{ color: "var(--muted)" }}>CA and INSEAD background utilized to simplify and articulate complex financial concepts.</p>
+                    <p className="leading-relaxed text-sm text-muted-foreground " >CA and INSEAD background utilized to simplify and articulate complex financial concepts.</p>
                   </div>
                 </div>
               </div>
@@ -225,7 +266,7 @@ export default function HomePageClient() {
 
           <FadeInStagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((s) => (
-              <ServiceCard key={s.id} service={s} />
+              <ServiceCard key={s.slug} service={s} />
             ))}
           </FadeInStagger>
 
@@ -242,7 +283,7 @@ export default function HomePageClient() {
             <FadeIn direction="right" className="relative group">
               <div className="rounded-3xl aspect-4/5 flex items-center justify-center shadow-2xl overflow-hidden border border-(--border) relative bg-slate-200">
                 <Image 
-                  src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=1000" 
+                  src="/savitadubey.jpeg" 
                   alt="Educational Leadership"
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -260,7 +301,7 @@ export default function HomePageClient() {
                 </h2>
               </FadeIn>
               <FadeIn delay={0.1}>
-                <div className="space-y-6 text-lg leading-relaxed mb-10" style={{ color: "var(--muted)" }}>
+                <div className="space-y-6 text-lg leading-relaxed mb-10 text-muted-foreground " >
                   <p>
                     With deep roots in audit (KPMG) and high-stakes banking (JPMorgan Chase), I have spent two decades navigating complex financial and regulatory environments.
                   </p>
@@ -281,14 +322,25 @@ export default function HomePageClient() {
           <div className="text-center mb-16">
             <FadeIn>
               <h2 className="font-serif text-3xl md:text-5xl font-bold mb-4" style={{ color: "var(--foreground)" }}>Finance & Governance Insights</h2>
-              <p className="text-lg max-w-2xl mx-auto" style={{ color: "var(--muted)" }}>Latest analysis on global markets and regulatory trends.</p>
+              <p className="text-lg max-w-2xl mx-auto text-muted-foreground " >Latest analysis on global markets and regulatory trends.</p>
             </FadeIn>
           </div>
-          <FadeInStagger className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {featuredBlogs.map((post) => (
-              <BlogCard key={post.slug} post={post} />
-            ))}
-          </FadeInStagger>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {loading ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="h-64 rounded-xl bg-muted animate-pulse" />
+              ))
+            ) : (
+              featuredBlogs.map((post) => (
+                <BlogCard key={post.id || post.slug} post={post} />
+              ))
+            )}
+          </div>
+          {featuredBlogs.length > 0 && (
+            <FadeIn className="text-center mt-12">
+              <Button href="/blog" variant="outline">View All Insights</Button>
+            </FadeIn>
+          )}
         </Container>
       </Section>
     </>

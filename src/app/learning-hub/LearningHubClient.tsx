@@ -33,8 +33,8 @@ export default function LearningHubClient() {
                   onClick={() => setActive(cat)}
                   className={`px-5 py-2.5 rounded-xl text-sm font-semibold tracking-wide transition-all duration-200 border ${
                     active === cat 
-                      ? "bg-(--accent) text-white border-(--accent)" 
-                      : "bg-(--card) text-(--muted) border-(--card-border) hover:border-(--accent)"
+                      ? "bg-[var(--accent)] text-white border-[var(--accent)]" 
+                      : "bg-[var(--surface)] text-[var(--foreground)] border-[var(--border)] hover:border-[var(--accent)] opacity-70 hover:opacity-100"
                   }`}
                 >
                   {cat}
@@ -66,9 +66,9 @@ export default function LearningHubClient() {
           {filtered.length === 0 && (
             <FadeIn className="text-center py-24 rounded-3xl border border-dashed" style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
               <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "var(--surface-2)" }}>
-                <Search style={{ color: "var(--muted)" }} />
+                <Search  />
               </div>
-              <p className="text-lg" style={{ color: "var(--muted-2)" }}>No topics found for this category yet.</p>
+              <p className="text-lg" >No topics found for this category yet.</p>
             </FadeIn>
           )}
         </Container>

@@ -6,6 +6,9 @@ import { useState, useEffect } from "react";
 import { Menu, X, Sun, Moon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuthStore } from "@/store/authStore";
+import { UserNav } from "@/components/UserNav";
+import { Button } from "@/components/ui/button";
 
 const links = [
   { href: "/", label: "Home" },
@@ -13,7 +16,7 @@ const links = [
   { href: "/learning-hub", label: "Learning Hub" },
   { href: "/services", label: "Services" },
   { href: "/blog", label: "Blog" },
-  { href: "/rise-heal", label: "Rise & Heal" },
+  // { href: "/rise-heal", label: "Rise & Heal" },
   { href: "/contact", label: "Contact" },
 ];
 
@@ -23,6 +26,7 @@ export default function Navbar() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { user, logout } = useAuthStore();
 
   useEffect(() => {
     setMounted(true);
@@ -30,11 +34,24 @@ export default function Navbar() {
       setScrolled(window.scrollY > 20);
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
+    
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Pages with light backgrounds even at top
-  const isLightPage = pathname === "/rise-heal";
+  const handleLogout = () => {
+    logout();
+    window.location.href = "/";
+  };
+
+  // Pages that need a solid navbar from the very top (no hero image)
+  const isSolidPage = 
+    
+    pathname.startsWith("/login") || 
+    pathname.startsWith("/register") || 
+    pathname.startsWith("/blog");
+
+  // Pages with light/solid backgrounds — navbar must always be visible
+  const isLightPage = isSolidPage;
 
   // Determine colors based on scroll, theme, and page type
   const getNavTextColor = () => {
@@ -72,14 +89,14 @@ export default function Navbar() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        scrolled 
-          ? (theme === "dark" ? "bg-black/90 backdrop-blur-md" : "bg-white shadow-sm") 
+        scrolled || isSolidPage
+          ? (theme === "dark" ? "bg-black/90 backdrop-blur-md" : "bg-white shadow-sm")
           : "bg-transparent"
       }`}
       style={{
-        paddingTop: scrolled ? '0.75rem' : '1.5rem',
-        paddingBottom: scrolled ? '0.75rem' : '1.5rem',
-        borderBottom: (scrolled && theme === 'light') ? '1px solid #e5e7eb' : 'none'
+        paddingTop: scrolled || isSolidPage ? '0.75rem' : '1.5rem',
+        paddingBottom: scrolled || isSolidPage ? '0.75rem' : '1.5rem',
+        borderBottom: ((scrolled || isSolidPage) && theme === 'light') ? '1px solid #e5e7eb' : 'none'
       }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -112,26 +129,34 @@ export default function Navbar() {
 
           <div className="flex items-center gap-3">
             {mounted && (
-              <button
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="p-2.5 rounded-xl transition-all duration-300 backdrop-blur-sm"
-                style={{ 
-                  color: getNavTextColor(), 
-                  background: getThemeButtonBg()
-                }}
-                aria-label="Toggle theme"
-              >
-                {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </button>
+              <>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                  className="rounded-xl transition-all duration-300 backdrop-blur-sm"
+                  style={{ 
+                    color: getNavTextColor(), 
+                    background: getThemeButtonBg()
+                  }}
+                  aria-label="Toggle theme"
+                >
+                  {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                </Button>
+
+                <UserNav />
+              </>
             )}
-            <button
-              className="md:hidden p-2 rounded-xl transition-all"
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden rounded-xl transition-all"
               style={{ color: getNavTextColor() }}
               onClick={() => setOpen(!open)}
               aria-label="Toggle menu"
             >
               {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -162,6 +187,16 @@ export default function Navbar() {
                 {label}
               </Link>
             ))}
+            {!user && (
+              <div className="pt-4 border-t border-border mt-4 flex flex-col gap-3 px-2">
+                <Link href="/login" onClick={() => setOpen(false)}>
+                  <Button variant="outline" className="w-full rounded-xl h-12 text-lg">Login</Button>
+                </Link>
+                <Link href="/register" onClick={() => setOpen(false)}>
+                  <Button className="w-full bg-[var(--accent)] text-white hover:bg-[var(--accent)]/90 rounded-xl h-12 text-lg">Register</Button>
+                </Link>
+              </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

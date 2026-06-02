@@ -21,7 +21,7 @@ export default function LearningCard({ item }: { item: LearningItem }) {
         <h3 className="font-serif text-lg font-semibold mb-2 leading-snug" style={{ color: "var(--foreground)" }}>
           {item.title}
         </h3>
-        <p className="text-sm leading-relaxed mb-5" style={{ color: "var(--muted)" }}>
+        <p className="text-sm leading-relaxed mb-5 text-muted-foreground" >
           {item.description}
         </p>
       </div>

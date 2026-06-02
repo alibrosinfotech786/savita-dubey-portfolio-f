@@ -5,7 +5,7 @@ const footerLinks = [
   { href: "/learning-hub", label: "Learning Hub" },
   { href: "/services", label: "Services" },
   { href: "/blog", label: "Blog" },
-  { href: "/rise-heal", label: "Rise & Heal" },
+  // { href: "/rise-heal", label: "Rise & Heal" },
   { href: "/contact", label: "Contact" },
 ];
 
@@ -19,7 +19,7 @@ export default function Footer() {
             <p className="text-sm leading-relaxed" style={{ color: "var(--muted-2)" }}>
               Finance. Compliance. Leadership.
             </p>
-            <p className="text-xs mt-3" style={{ color: "var(--muted)" }}>
+            <p className="text-xs mt-3 text-muted-foreground " >
               INSEAD · KPMG · JPMorgan
             </p>
           </div>
@@ -29,7 +29,7 @@ export default function Footer() {
             <ul className="space-y-2">
               {footerLinks.map(({ href, label }) => (
                 <li key={href}>
-                  <Link href={href} className="text-sm transition-colors duration-200 hover:opacity-100" style={{ color: "var(--muted)" }}>
+                  <Link href={href} className="text-sm transition-colors duration-200 hover:opacity-100 text-muted-foreground " >
                     {label}
                   </Link>
                 </li>
@@ -39,24 +39,35 @@ export default function Footer() {
 
           <div>
             <p className="text-sm font-semibold mb-4 uppercase tracking-wider" style={{ color: "var(--muted-2)" }}>Get in Touch</p>
-            <p className="text-sm leading-relaxed mb-4" style={{ color: "var(--muted)" }}>
+            <p className="text-sm leading-relaxed mb-4 text-muted-foreground " >
               Available for advisory, training, and speaking engagements globally.
             </p>
-            <Link
-              href="/contact"
-              className="inline-flex items-center text-sm font-medium transition-colors"
-              style={{ color: "var(--accent)" }}
-            >
-              Send a message →
-            </Link>
+            <div className="flex flex-col gap-3">
+              {/* <Link
+                href="/contact"
+                className="inline-flex items-center text-sm font-medium transition-colors"
+                style={{ color: "var(--accent)" }}
+              >
+                Send a message →
+              </Link> */}
+              <a
+                href="https://wa.me/6580253761" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-sm font-medium transition-colors gap-2"
+                style={{ color: "#25D366" }}
+              >
+                WhatsApp Us →
+              </a>
+            </div>
           </div>
         </div>
 
         <div className="border-t mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left" style={{ borderColor: "var(--border)" }}>
-          <p className="text-xs" style={{ color: "var(--muted)" }}>
+          <p className="text-xs text-muted-foreground " >
             © {new Date().getFullYear()} Savita Dubey. All rights reserved.
           </p>
-          <p className="text-xs" style={{ color: "var(--muted)" }}>
+          <p className="text-xs text-muted-foreground " >
             Designed and developed by{" "}
             <a 
               href="https://alibrosinfotech.com/" 
@@ -68,7 +79,7 @@ export default function Footer() {
               Alibros Infotech Pvt Ltd
             </a>
           </p>
-          <p className="text-xs" style={{ color: "var(--muted)" }}>Finance. Compliance. Leadership.</p>
+          <p className="text-xs text-muted-foreground " >Finance. Compliance. Leadership.</p>
         </div>
       </div>
     </footer>

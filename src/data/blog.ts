@@ -43,7 +43,7 @@ Compliance is often treated as a cost centre - a necessary burden imposed by reg
     tag: "Governance",
     date: "January 20, 2026",
     readTime: "5 min read",
-    image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1758518730151-cf64fddb4f0a?q=80&w=1331&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     content: `**The Auditor's Dilemma**
 
 Audit is, at its core, an act of professional scepticism. The auditor's job is to question, to probe, and to form an independent opinion - even when that opinion is uncomfortable for the client. This requires not just technical competence, but genuine moral courage.`

@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Inter, Playfair_Display, Geist } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import ThemeProvider from "@/components/ThemeProvider";
+import PublicShell from "@/components/PublicShell";
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const inter = Inter({
   subsets: ["latin"],
@@ -22,6 +26,7 @@ export const metadata: Metadata = {
     default: "Savita Dubey | Chartered Accountant & Finance Consultant",
     template: "%s | Savita Dubey",
   },
+  metadataBase: new URL("https://savitadubey.com"),
   description:
     "Savita Dubey is a Chartered Accountant, INSEAD graduate, and finance consultant specializing in Corporate Compliance, AML/KYC training, and Audit methodology.",
   keywords: ["Savita Dubey", "Chartered Accountant", "Finance Consultant", "Corporate Compliance", "AML training", "KYC advisory", "Audit training", "INSEAD Finance"],
@@ -53,16 +58,24 @@ export const metadata: Metadata = {
   },
 };
 
+import PlatformCheck from "@/components/PlatformCheck";
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable}`} suppressHydrationWarning>
-      <body className="min-h-screen flex flex-col bg-[var(--background)] text-[var(--foreground)] font-sans antialiased">
+    <html lang="en" className={cn(inter.variable, playfair.variable, "font-sans", geist.variable)} suppressHydrationWarning>
+      <body 
+        className="min-h-screen flex flex-col bg-[var(--background)] text-[var(--foreground)] font-sans antialiased"
+        suppressHydrationWarning
+      >
         <ThemeProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <TooltipProvider>
+            <PlatformCheck>
+              <PublicShell>{children}</PublicShell>
+            </PlatformCheck>
+            <Toaster richColors position="top-right" />
+          </TooltipProvider>
         </ThemeProvider>
       </body>
     </html>

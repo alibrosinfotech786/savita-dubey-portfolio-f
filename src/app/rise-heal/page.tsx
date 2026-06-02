@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Section from "@/components/Section";
 import Container from "@/components/Container";
 import Button from "@/components/Button";
+import PaymentButton from "@/components/PaymentButton";
 import { FadeIn, FadeInStagger } from "@/components/Animations";
 import { Sparkles, Heart, RefreshCw, Layers } from "lucide-react";
 
@@ -59,7 +60,7 @@ export default function RiseHealPage() {
               Support for Women Facing{" "}
               <span style={{ color: "#DB2777" }}>Emotional & Professional Challenges</span>
             </h1>
-            <p className="text-lg md:text-xl max-w-3xl mx-auto leading-relaxed italic" style={{ color: "var(--muted)" }}>
+            <p className="text-lg md:text-xl max-w-3xl mx-auto leading-relaxed italic text-muted-foreground " >
               "A dedicated platform for women in finance and demanding roles to navigate personal transitions, career hurdles, and rediscovering professional confidence."
             </p>
           </FadeIn>
@@ -74,7 +75,7 @@ export default function RiseHealPage() {
             <p className="text-xl md:text-2xl font-serif leading-relaxed mb-8" style={{ color: "var(--foreground)" }}>
               Finance is a demanding profession. The pressure to perform, the long hours, the constant change — it takes a toll that is rarely acknowledged in boardrooms or on CVs.
             </p>
-            <p className="text-lg leading-relaxed" style={{ color: "var(--muted)" }}>
+            <p className="text-lg leading-relaxed text-muted-foreground " >
               Rise & Heal is my commitment to changing that conversation. It is a space where ambition and vulnerability coexist — where you can be both a high-performing professional and a whole human being.
             </p>
           </FadeIn>
@@ -105,9 +106,9 @@ export default function RiseHealPage() {
                 >
                   {p.icon}
                 </div>
-                <span className="font-serif text-6xl font-extrabold block mb-2" style={{ color: "var(--surface-2)" }}>0{i + 1}</span>
+                <span className="font-serif text-7xl font-extrabold block mb-2 opacity-40" style={{ color: "var(--foreground)" }}>0{i + 1}</span>
                 <h3 className="font-serif text-2xl font-bold mb-4" style={{ color: "var(--foreground)" }}>{p.title}</h3>
-                <p className="text-lg leading-relaxed" style={{ color: "var(--muted)" }}>{p.desc}</p>
+                <p className="text-lg leading-relaxed text-muted-foreground " >{p.desc}</p>
               </div>
             ))}
           </FadeInStagger>
@@ -139,7 +140,7 @@ export default function RiseHealPage() {
               <Layers size={14} /> Support Toolkit
             </div>
             <h2 className="font-serif text-3xl md:text-5xl font-bold mb-6" style={{ color: "var(--foreground)" }}>Resources & Support</h2>
-            <p className="text-lg max-w-2xl mx-auto" style={{ color: "var(--muted)" }}>
+            <p className="text-lg max-w-2xl mx-auto text-muted-foreground " >
               Practical tools and conversations to help you navigate the emotional landscape of a finance career.
             </p>
           </FadeIn>
@@ -152,7 +153,7 @@ export default function RiseHealPage() {
               >
                 <div className="w-2 h-7 rounded-full mb-4" style={{ background: "#DB2777" }} />
                 <h3 className="font-serif text-2xl font-bold mb-3" style={{ color: "var(--foreground)" }}>{item.title}</h3>
-                <p className="text-lg leading-relaxed" style={{ color: "var(--muted)" }}>{item.desc}</p>
+                <p className="text-lg leading-relaxed text-muted-foreground " >{item.desc}</p>
               </div>
             ))}
           </FadeInStagger>
@@ -167,12 +168,16 @@ export default function RiseHealPage() {
             <p className="text-indigo-200 text-lg max-w-xl mx-auto mb-8">
               If you are going through a difficult period in your career or life, reach out. A conversation can be the beginning of something better.
             </p>
-            <Button href="/contact" className="!bg-white !text-indigo-600 hover:!bg-indigo-50 shadow-lg border-none">
-              Reach Out
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button href="/contact" className="!bg-white !text-indigo-600 hover:!bg-indigo-50 shadow-lg border-none">
+                Reach Out
+              </Button>
+             
+            </div>
           </FadeIn>
         </Container>
       </Section>
     </>
   );
 }
+

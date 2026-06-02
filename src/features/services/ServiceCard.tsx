@@ -4,6 +4,7 @@ import { Service } from "@/data/services";
 import Card from "@/components/Card";
 import { StaggerItem } from "@/components/Animations";
 import { Briefcase, GraduationCap, Mic2 } from "lucide-react";
+import PaymentButton from "@/components/PaymentButton";
 
 const icons: Record<string, ReactElement> = {
   briefcase: <Briefcase className="w-5 h-5" />,
@@ -37,15 +38,23 @@ export default function ServiceCard({ service }: { service: Service }) {
           )}
           <h3 className="font-serif text-2xl font-bold mb-2 transition-colors duration-300 group-hover:text-(--accent)" style={{ color: "var(--foreground)" }}>{service.title}</h3>
           <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: "var(--accent)" }}>{service.tagline}</p>
-          <p className="text-sm leading-relaxed mb-6 flex-1" style={{ color: "var(--muted)" }}>{service.description}</p>
+          <p className="text-sm leading-relaxed mb-6 flex-1 text-muted-foreground " >{service.description}</p>
           <ul className="space-y-3 pt-6 border-t border-(--border)">
             {service.deliverables.map((d) => (
-              <li key={d} className="flex items-start gap-3 text-sm font-medium" style={{ color: "var(--muted)" }}>
+              <li key={d} className="flex items-start gap-3 text-sm font-medium text-muted-foreground " >
                 <span className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: "var(--accent)" }} />
                 {d}
               </li>
             ))}
           </ul>
+          <div className="mt-8">
+            <PaymentButton 
+              packageId={1} // ID of the package in database
+              amount={5000} // Price in INR
+              packageName={service.title}
+              className="w-full"
+            />
+          </div>
         </div>
       </Card>
     </StaggerItem>

@@ -21,7 +21,7 @@ const fadeVariants: Variants = {
   },
 };
 
-const staggerContainer: Variants = {
+export const staggerContainer: Variants = {
   hidden: {},
   visible: {
     transition: {
@@ -107,7 +107,10 @@ export const StaggerItem = ({
   children: ReactNode;
   className?: string;
 }) => (
-  <motion.div variants={staggerItem} className={className}>
+  <motion.div
+    variants={staggerItem}
+    className={className}
+  >
     {children}
   </motion.div>
 );
