@@ -86,28 +86,93 @@ class PostController extends Controller
     // Admin: Create post (supports file upload for cover_image)
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title'       => 'required|string|max:255',
-            'content'     => 'required|string',
-            'excerpt'     => 'nullable|string',
-            'cover_image' => 'nullable|image|max:10240',
-            'author_name' => 'nullable|string',
-            'is_premium'  => 'required',
-            'category'    => 'nullable|string',
-            'slug'        => 'nullable|string',
-        ]);
+        // Debug logging for upload attempt
+        if ($request->hasFile('cover_image')) {
+            $file = $request->file('cover_image');
+            \Log::info('Image upload attempt', [
+                'name' => $file->getClientOriginalName(),
+                'size' => $file->getSize(),
+                'mime' => $file->getClientMimeType(),
+                'extension' => $file->getClientOriginalExtension(),
+                'error' => $file->getError(),
+                'is_valid' => $file->isValid(),
+            ]);
+
+            if (!$file->isValid()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Image upload failed: ' . $file->getErrorMessage(),
+                    'error_code' => 'UPLOAD_ERROR_' . $file->getError()
+                ], 422);
+            }
+
+            $allowedFormats = ['jpeg', 'jpg', 'png', 'webp'];
+            $extension = strtolower($file->getClientOriginalExtension());
+            if (!in_array($extension, $allowedFormats)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Only JPG, PNG, WEBP images are allowed.',
+                    'error_code' => 'INVALID_FORMAT'
+                ], 422);
+            }
+        }
+
+        try {
+            $validated = $request->validate([
+                'title'       => 'required|string|max:255',
+                'content'     => 'required|string',
+                'excerpt'     => 'nullable|string',
+                'cover_image' => 'nullable|image|max:10240',
+                'author_name' => 'nullable|string',
+                'is_premium'  => 'required',
+                'category'    => 'nullable|string',
+                'slug'        => 'nullable|string',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->validator->errors()->first(),
+                'errors' => $e->errors(),
+                'error_code' => 'VALIDATION_ERROR'
+            ], 422);
+        }
 
         // Handle file upload
         if ($request->hasFile('cover_image')) {
-            $path = $request->file('cover_image')->store('covers', 'public');
-            $validated['cover_image'] = $path;
+            try {
+                $path = $request->file('cover_image')->store('covers', 'public');
+                if (!$path) {
+                    throw new \Exception("store() returned false");
+                }
+                $validated['cover_image'] = $path;
+            } catch (\Exception $e) {
+                \Log::error('Image store exception: ' . $e->getMessage());
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Image upload failed due to storage configuration.',
+                    'error_code' => 'STORAGE_ERROR'
+                ], 500);
+            }
         }
 
         $validated['slug']        = Str::slug($validated['title']) . '-' . uniqid();
         $validated['author_name'] = $validated['author_name'] ?? 'Savita Dubey';
 
-        $post = Post::create($validated);
-        return response()->json($post, 201);
+        try {
+            $post = Post::create($validated);
+            // Ensure compatibility with older frontend expectations (returns 201)
+            // But we can just return the post object as before with success wrapped.
+            // Wait, old return was: return response()->json($post, 201);
+            // Frontend store/blogStore.ts check: response.status === 200 || response.status === 201
+            return response()->json($post, 201);
+        } catch (\Exception $e) {
+            \Log::error('Post creation exception: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to save post to database.',
+                'error_code' => 'DATABASE_ERROR'
+            ], 500);
+        }
     }
 
     // Admin: Update post (supports file upload)
@@ -115,26 +180,87 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($id);
 
-        $request->validate([
-            'title'       => 'nullable|string|max:255',
-            'cover_image' => 'nullable|image|max:10240',
-            // is_premium might come as string "1" or "0"
-        ]);
+        if ($request->hasFile('cover_image')) {
+            $file = $request->file('cover_image');
+            \Log::info('Image upload attempt (update)', [
+                'post_id' => $id,
+                'name' => $file->getClientOriginalName(),
+                'size' => $file->getSize(),
+                'mime' => $file->getClientMimeType(),
+                'extension' => $file->getClientOriginalExtension(),
+                'error' => $file->getError(),
+                'is_valid' => $file->isValid(),
+            ]);
+
+            if (!$file->isValid()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Image upload failed: ' . $file->getErrorMessage(),
+                    'error_code' => 'UPLOAD_ERROR_' . $file->getError()
+                ], 422);
+            }
+
+            $allowedFormats = ['jpeg', 'jpg', 'png', 'webp'];
+            $extension = strtolower($file->getClientOriginalExtension());
+            if (!in_array($extension, $allowedFormats)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Only JPG, PNG, WEBP images are allowed.',
+                    'error_code' => 'INVALID_FORMAT'
+                ], 422);
+            }
+        }
+
+        try {
+            $request->validate([
+                'title'       => 'nullable|string|max:255',
+                'cover_image' => 'nullable|image|max:10240',
+                // is_premium might come as string "1" or "0"
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->validator->errors()->first(),
+                'errors' => $e->errors(),
+                'error_code' => 'VALIDATION_ERROR'
+            ], 422);
+        }
 
         $data = $request->except(['cover_image', '_method']);
 
         if ($request->hasFile('cover_image')) {
-            // Delete old image if it exists and is stored in 'covers'
-            if ($post->cover_image && !Str::startsWith($post->cover_image, 'http')) {
-                Storage::disk('public')->delete($post->cover_image);
-            }
+            try {
+                // Delete old image if it exists and is stored in 'covers'
+                if ($post->cover_image && !\Illuminate\Support\Str::startsWith($post->cover_image, 'http')) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($post->cover_image);
+                }
 
-            $path = $request->file('cover_image')->store('covers', 'public');
-            $data['cover_image'] = $path;
+                $path = $request->file('cover_image')->store('covers', 'public');
+                if (!$path) {
+                    throw new \Exception("store() returned false");
+                }
+                $data['cover_image'] = $path;
+            } catch (\Exception $e) {
+                \Log::error('Image store exception (update): ' . $e->getMessage());
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Image upload failed due to storage configuration.',
+                    'error_code' => 'STORAGE_ERROR'
+                ], 500);
+            }
         }
 
-        $post->update($data);
-        return response()->json($post);
+        try {
+            $post->update($data);
+            return response()->json($post);
+        } catch (\Exception $e) {
+            \Log::error('Post update exception: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update post in database.',
+                'error_code' => 'DATABASE_ERROR'
+            ], 500);
+        }
     }
 
     // Admin: Delete post

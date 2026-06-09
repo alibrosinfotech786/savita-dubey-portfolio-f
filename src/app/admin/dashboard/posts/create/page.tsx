@@ -36,36 +36,130 @@ function CreatePostPage() {
     setSlug(val.toLowerCase().trim().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-"));
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) { setCoverImage(file); setPreviewUrl(URL.createObjectURL(file)); }
-  };
+const handleImageChange = (
+  e: React.ChangeEvent<HTMLInputElement>
+) => {
+  const file = e.target.files?.[0];
 
-  const handleSubmit = async () => {
-    if (!title || !content) {
-      toast.error("Title and content are required.");
-      return;
-    }
+  if (!file) return;
+
+  const allowedTypes = [
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/webp",
+  ];
+
+  if (!allowedTypes.includes(file.type)) {
+    toast.error(
+      "Unsupported image format. Please upload JPG, PNG or WEBP."
+    );
+
+    e.target.value = "";
+    setCoverImage(null);
+    setPreviewUrl(null);
+    return;
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    toast.error("Cover image must be less than 5 MB.");
+
+    e.target.value = "";
+    setCoverImage(null);
+    setPreviewUrl(null);
+    return;
+  }
+
+  setCoverImage(file);
+  setPreviewUrl(URL.createObjectURL(file));
+};
+
+const handleSubmit = async () => {
+  if (!title.trim()) {
+    toast.error("Please enter a title.");
+    return;
+  }
+
+  if (!content.trim()) {
+    toast.error("Please enter post content.");
+    return;
+  }
+
+  if (!coverImage) {
+    toast.error("Please select a cover image.");
+    return;
+  }
+
+  const allowedTypes = [
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/webp",
+  ];
+
+  if (!allowedTypes.includes(coverImage.type)) {
+    toast.error(
+      "Unsupported image format. Please upload JPG, PNG or WEBP."
+    );
+    return;
+  }
+
+  if (coverImage.size > 5 * 1024 * 1024) {
+    toast.error("Cover image must be less than 5 MB.");
+    return;
+  }
+
+  try {
     setLoading(true);
+
     const formData = new FormData();
+
     formData.append("title", title);
     formData.append("slug", slug);
     formData.append("content", content);
     formData.append("excerpt", excerpt);
     formData.append("category", category);
-    formData.append("is_premium", isPremium ? "1" : "0");
-    formData.append("author_name", "Savita Dubey");
-    if (coverImage) formData.append("cover_image", coverImage);
+    formData.append(
+      "is_premium",
+      isPremium ? "1" : "0"
+    );
+    formData.append(
+      "author_name",
+      "Savita Dubey"
+    );
+    formData.append(
+      "cover_image",
+      coverImage
+    );
 
-    const success = await createPost(formData);
-    if (success) {
-      toast.success("Post published successfully");
+    const result = await createPost(formData);
+
+    if (result?.success) {
+      toast.success("Post created successfully.");
       router.push("/admin/dashboard/posts");
-    } else {
-      toast.error("Failed to create post.");
+      return;
     }
+
+    const errorMessage =
+      result?.message ||
+      result?.errors?.cover_image?.[0] ||
+      result?.errors?.title?.[0] ||
+      result?.errors?.content?.[0] ||
+      "Failed to create post.";
+
+    toast.error(errorMessage);
+
+  } catch (error: any) {
+    console.error(error);
+
+    toast.error(
+      error?.response?.data?.message ||
+      "Something went wrong while creating the post."
+    );
+  } finally {
     setLoading(false);
-  };
+  }
+};
 
   return (
     <div className="space-y-6">
@@ -123,8 +217,12 @@ function CreatePostPage() {
                     <p className="text-xs text-muted-foreground">Click to upload</p>
                   </div>
                 )}
-                <input type="file" accept="image/*" onChange={handleImageChange} className="absolute inset-0 opacity-0 cursor-pointer" />
-              </div>
+<input
+  type="file"
+  accept=".jpg,.jpeg,.png,.webp"
+  onChange={handleImageChange}
+  className="absolute inset-0 opacity-0 cursor-pointer"
+/>              </div>
             </CardContent>
           </Card>
 

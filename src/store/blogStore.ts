@@ -25,7 +25,7 @@ interface BlogState {
 
   fetchPosts: (page?: number, perPage?: number) => Promise<void>;
   fetchPostById: (id: string) => Promise<{ success: boolean; status?: number; message?: string }>;
-  createPost: (formData: FormData) => Promise<boolean>;
+  createPost: (formData: FormData) => Promise<{ success: boolean; message?: string; errors?: Record<string, string[]> }>;
   updatePost: (id: string, formData: FormData) => Promise<boolean>;
   deletePost: (id: number) => Promise<boolean>;
   clearCurrentPost: () => void;
@@ -84,9 +84,13 @@ export const useBlogStore = create<BlogState>((set) => ({
       const response = await api.post('/posts', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      return response.status === 200 || response.status === 201;
-    } catch {
-      return false;
+      return { success: response.status === 200 || response.status === 201 };
+    } catch (err: any) {
+      return { 
+        success: false, 
+        message: err.response?.data?.message,
+        errors: err.response?.data?.errors
+      };
     }
   },
 

@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import GlobalBlogAnnouncement from "@/components/GlobalBlogAnnouncement";
 import { usePlatformStore } from "@/store/platformStore";
 import { useAuthStore } from "@/store/authStore";
 
@@ -24,6 +25,7 @@ export default function PublicShell({ children }: { children: React.ReactNode })
   return (
     <>
       <Navbar />
+      <GlobalBlogAnnouncement />
       <main className="flex-1">{children}</main>
       <Footer />
     </>

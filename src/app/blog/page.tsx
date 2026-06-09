@@ -13,7 +13,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Lock, ArrowLeft, Calendar, User, Clock, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Lock, ArrowLeft, Calendar, User, Clock, Loader2, ChevronLeft, ChevronRight, XIcon, Share2 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ShareModal } from "@/components/ShareModal";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -23,6 +25,7 @@ import DOMPurify from "dompurify";
 function BlogCard({ post, hasSubscription }: { post: any; hasSubscription: boolean }) {
   const router = useRouter();
   const { user } = useAuthStore();
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   
   return (
     <div className="group flex flex-col h-full rounded-xl border border-border bg-card text-card-foreground shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden">
@@ -39,18 +42,26 @@ function BlogCard({ post, hasSubscription }: { post: any; hasSubscription: boole
           className="object-cover group-hover:scale-105 transition-transform duration-300"
           unoptimized
         />
-        {post.is_premium && (
-          <div className="absolute top-3 right-3 flex items-center gap-1 bg-amber-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
-            <Lock className="h-3 w-3" /> Premium
-          </div>
-        )}
+        <div className="absolute top-3 right-3 flex items-center gap-2">
+          {post.is_premium && (
+            <div className="flex items-center gap-1 bg-amber-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
+              <Lock className="h-3 w-3" /> Premium
+            </div>
+          )}
+          <button 
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsShareModalOpen(true); }}
+            className="flex items-center justify-center bg-background/80 backdrop-blur-sm text-foreground hover:bg-background hover:text-primary transition-colors w-7 h-7 rounded-full shadow-sm"
+            aria-label="Share"
+          >
+            <Share2 className="h-3.5 w-3.5" />
+          </button>
+        </div>
       </div>
 
       {/* Body */}
       <div className="p-5 flex flex-col flex-1">
         <div className="flex items-center gap-2 mb-3">
           <Badge variant="secondary" className="text-xs">{post.category || "Finance"}</Badge>
-          {/* <span className="text-xs text-muted-foreground">5 min read</span> */}
         </div>
 
         <h3 className="font-semibold text-base text-card-foreground leading-snug mb-2 line-clamp-2 group-hover:text-primary transition-colors">
@@ -88,6 +99,12 @@ function BlogCard({ post, hasSubscription }: { post: any; hasSubscription: boole
           )}
         </div>
       </div>
+      
+      <ShareModal 
+        isOpen={isShareModalOpen} 
+        onClose={() => setIsShareModalOpen(false)} 
+        post={post} 
+      />
     </div>
   );
 }
@@ -163,17 +180,21 @@ function BlogList() {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {posts.length > 0 ? (
-                  posts.map((post: any) => (
-                    <BlogCard key={post.id} post={post} hasSubscription={hasSubscription} />
-                  ))
-                ) : (
-                  DUMMY_POSTS.map((post: any) => (
-                    <BlogCard key={post.id} post={post} hasSubscription={hasSubscription} />
-                  ))
-                )}
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+  {posts.length > 0 ? (
+    posts.map((post: any) => (
+      <BlogCard
+        key={post.id}
+        post={post}
+        hasSubscription={hasSubscription}
+      />
+    ))
+  ) : (
+    <div className="col-span-full text-center py-10">
+      No posts found
+    </div>
+  )}
+</div>
 
               {/* Pagination */}
               {posts.length > 0 && lastPage > 1 && (
@@ -218,6 +239,7 @@ function BlogDetail({ id }: { id: string }) {
   const [lockReason, setLockReason] = useState<"login" | "package" | null>(null);
   const [localPost, setLocalPost] = useState<any>(null);
   const [localLoading, setLocalLoading] = useState(true);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   useEffect(() => {
     if (token) {
@@ -227,12 +249,10 @@ function BlogDetail({ id }: { id: string }) {
 
   useEffect(() => {
     const loadPost = async () => {
-      // Check if it's a dummy ID
       if (id.startsWith('dummy')) {
         const dummy = DUMMY_POSTS.find(p => p.id === id);
         setLocalPost(dummy || null);
         
-        // Handle dummy premium content locking
         if (dummy?.is_premium && user?.role !== 'admin' && user?.role !== 'superadmin') {
           if (!user) {
             setLocked(true);
@@ -285,12 +305,22 @@ function BlogDetail({ id }: { id: string }) {
         <div className="max-w-3xl mx-auto">
 
           {/* Back */}
-          <button
-            onClick={() => router.back()}
-            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4" /> Back to Blog
-          </button>
+          <div className="flex items-center justify-between mb-8">
+            <button
+              onClick={() => router.back()}
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4" /> Back to Blog
+            </button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2"
+              onClick={() => setIsShareModalOpen(true)}
+            >
+              <Share2 className="h-4 w-4" /> Share
+            </Button>
+          </div>
           
           {/* Header */}
           <header className="mb-8">
@@ -310,17 +340,16 @@ function BlogDetail({ id }: { id: string }) {
                 {activePost.excerpt}
               </p>
             )}
-            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1.5">
-                <User className="h-4 w-4" />{activePost.author_name || "Savita Dubey"}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Calendar className="h-4 w-4" />
-                {new Date(activePost.created_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
-              </span>
-              {/* <span className="flex items-center gap-1.5">
-                <Clock className="h-4 w-4" />5 min read
-              </span> */}
+            <div className="flex flex-wrap items-center justify-between gap-4 text-sm text-muted-foreground">
+              <div className="flex flex-wrap items-center gap-4">
+                <span className="flex items-center gap-1.5">
+                  <User className="h-4 w-4" />{activePost.author_name || "Savita Dubey"}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Calendar className="h-4 w-4" />
+                  {new Date(activePost.created_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+                </span>
+              </div>
             </div>
           </header>
 
@@ -344,7 +373,6 @@ function BlogDetail({ id }: { id: string }) {
           {/* Content or Paywall */}
           {locked ? (
             <div className="relative">
-              {/* Blurred preview */}
               <div
                 className="prose prose-slate dark:prose-invert max-w-none select-none pointer-events-none"
                 style={{ filter: "blur(5px)", opacity: 0.3, maxHeight: 180, overflow: "hidden" }}
@@ -353,7 +381,6 @@ function BlogDetail({ id }: { id: string }) {
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
               </div>
 
-              {/* Paywall card */}
               <div className="mt-6">
                 <Card className="border-primary/20 shadow-lg">
                   <CardContent className="py-10 text-center space-y-5">
@@ -402,6 +429,11 @@ function BlogDetail({ id }: { id: string }) {
           )}
         </div>
       </Container>
+      <ShareModal 
+        isOpen={isShareModalOpen} 
+        onClose={() => setIsShareModalOpen(false)} 
+        post={activePost} 
+      />
     </div>
   );
 }

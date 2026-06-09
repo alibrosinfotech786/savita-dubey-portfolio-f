@@ -2,9 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Lock } from "lucide-react";
+import { Lock, Share2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StaggerItem } from "@/components/Animations";
+import { ShareModal } from "@/components/ShareModal";
+import { useState } from "react";
 
 interface BlogCardProps {
   post: {
@@ -28,7 +30,8 @@ interface BlogCardProps {
 }
 
 export default function BlogCard({ post, hasSubscription = false }: BlogCardProps) {
-  const id = post.id || post.slug;
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const id = post.id || post.slug || "";
   const coverImage = post.image || post.cover_image;
 
   const imageSrc = coverImage
@@ -39,52 +42,68 @@ export default function BlogCard({ post, hasSubscription = false }: BlogCardProp
 
   return (
     <StaggerItem>
-      <Link href={`/blog?id=${id}`} className="group block h-full">
-        <div className="h-full rounded-xl border border-border bg-card text-card-foreground shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden flex flex-col">
-          {/* Image */}
-          <div className="relative w-full h-48 bg-muted overflow-hidden">
-            <Image
-              src={imageSrc}
-              alt={post.title}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
-              unoptimized
-            />
-            {post.is_premium && !hasSubscription && (
-              <div className="absolute top-3 right-3 flex items-center gap-1 bg-amber-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
-                <Lock className="h-3 w-3" /> Premium
+      <div className="group block h-full relative">
+        <Link href={`/blog?id=${id}`} className="block h-full">
+          <div className="h-full rounded-xl border border-border bg-card text-card-foreground shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden flex flex-col">
+            {/* Image */}
+            <div className="relative w-full h-48 bg-muted overflow-hidden">
+              <Image
+                src={imageSrc}
+                alt={post.title}
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
+                unoptimized
+              />
+              <div className="absolute top-3 right-3 flex items-center gap-2">
+                {post.is_premium && !hasSubscription && (
+                  <div className="flex items-center gap-1 bg-amber-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
+                    <Lock className="h-3 w-3" /> Premium
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-
-          {/* Body */}
-          <div className="p-5 flex flex-col flex-1">
-            <div className="flex items-center gap-2 mb-3">
-              <Badge variant="secondary" className="text-xs">
-                {post.category || post.tag}
-              </Badge>
-              {post.readTime && (
-                <span className="text-xs text-muted-foreground">{post.readTime}</span>
-              )}
             </div>
 
-            <h3 className="font-semibold text-base text-foreground leading-snug mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-              {post.title}
-            </h3>
+            {/* Body */}
+            <div className="p-5 flex flex-col flex-1">
+              <div className="flex items-center gap-2 mb-3">
+                <Badge variant="secondary" className="text-xs">
+                  {post.category || post.tag}
+                </Badge>
+                {post.readTime && (
+                  <span className="text-xs text-muted-foreground">{post.readTime}</span>
+                )}
+              </div>
 
-            <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3 flex-1 mb-4">
-              {post.excerpt || post.description}
-            </p>
+              <h3 className="font-semibold text-base text-foreground leading-snug mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                {post.title}
+              </h3>
 
-            <div className="flex items-center justify-between mt-auto pt-3 border-t border-border">
-              <span className="text-xs text-muted-foreground">
-                {post.author?.name || post.author_name || "Savita Dubey"}
-              </span>
-              <span className="text-xs text-muted-foreground">{post.date}</span>
+              <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3 flex-1 mb-4">
+                {post.excerpt || post.description}
+              </p>
+
+              <div className="flex items-center justify-between mt-auto pt-3 border-t border-border">
+                <span className="text-xs text-muted-foreground">
+                  {post.author?.name || post.author_name || "Savita Dubey"}
+                </span>
+                <span className="text-xs text-muted-foreground">{post.date}</span>
+              </div>
             </div>
           </div>
-        </div>
-      </Link>
+        </Link>
+        <button 
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsShareModalOpen(true); }}
+          className="absolute top-3 right-3 z-10 flex items-center justify-center bg-background/80 backdrop-blur-sm text-foreground hover:bg-background hover:text-primary transition-colors w-7 h-7 rounded-full shadow-sm"
+          aria-label="Share"
+        >
+          <Share2 className="h-3.5 w-3.5" />
+        </button>
+      </div>
+      <ShareModal 
+        isOpen={isShareModalOpen} 
+        onClose={() => setIsShareModalOpen(false)} 
+        post={{...post, id}} 
+      />
     </StaggerItem>
   );
 }
